@@ -25,6 +25,9 @@ namespace ProductService.DataAccess
 
         //deletes a product, either by setting a soft delete flag or by hard delete / purge or db data
         bool DeleteProduct(Product productToDelete, bool purge = false);
+
+        //creates a new product
+        int CreateProduct(Product newProduct);
     }
 
     public class ProductDataSource : IProductDataSource
@@ -159,7 +162,17 @@ namespace ProductService.DataAccess
             }
         }
 
+        public int CreateProduct(Product newProduct)
+        {
+            //invalidate id, table auto incraments id property
+            newProduct.ProductId = -1;
 
+            using (IDbConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                    var results = connection.Insert<Product>(newProduct);
+                    return (int)results;
+            }
+        }
 
     }
 

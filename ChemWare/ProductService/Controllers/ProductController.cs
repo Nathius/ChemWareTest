@@ -19,21 +19,20 @@ namespace ProductService.Controllers
             productSource = prod;
         }
 
-        // GET api/values
+
         [HttpGet]
         public ActionResult<IEnumerable<Product>> Get(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
         {
-
             return productSource.GetProducts(max, page, productType, productTypeCode, orderBy, orderByAscending);
         }
+        
 
-        //bool UpdateProduct(int productId, Product newProductValues)
-        // POST api/values
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Product newProductValues)
         {
             return productSource.UpdateProduct(newProductValues);
         }
+
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
@@ -43,39 +42,20 @@ namespace ProductService.Controllers
             var product = productSource.GetProduct(id);
             if(product == null)
             {
-                //TODO  Add more complex custon action result, with properties for returned data, status messages, error messages, etc
                 //product doesnt exist
+                //Could Add a more complex custom action result, with properties for returned data, status messages, error messages, etc
                 return true;
             }
 
             return productSource.DeleteProduct(product, purge);
-
         }
 
 
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public ActionResult<string> Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/values
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpPut]
+        public ActionResult<int> Put([FromBody] Product newProduct)
+        {
+            var res = productSource.CreateProduct(newProduct);
+            return res;
+        }
     }
 }
