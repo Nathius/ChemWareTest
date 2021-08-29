@@ -40,6 +40,7 @@ Various versions might be a bit out of date, I've not used this laptop for devel
 But obviously in any work environment updating versions, packages, plugins, etc needs to be part of the scheduled dev cycle otherwise it never happens until it's urgent/too late.
 
 I've used entity framework previously, but it can be a bit cumbersome, so I gave dapper a try. Not sure I've used it to it's fullest, but hopefully avoided lazy loading performance dramas. 
+Would also add a script runner that could automatically read all the scripts in the database files and apply them to a blank database to bring it up to date and populate it without needing to run individual scripts.
 
 Didn't get around to adding the UI, managed to create a react 'hello world', and comfortable enough working away at it, but ran out of time to include anything worth showing.
 Have worked as a full stack dev for a number of years and very capable of building basic / utilitarian UI , but usually have the advantage of not needing to start from scratch.
