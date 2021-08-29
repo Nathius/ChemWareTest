@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductService\ProductService.csproj", "{31FA9FA9-14D7-49F6-A1D3-76CD7AA7ABD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutService", "CheckoutService\CheckoutService.csproj", "{C19097A7-CA5B-49AD-AE13-F098101F7CD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckoutService", "CheckoutService\CheckoutService.csproj", "{C19097A7-CA5B-49AD-AE13-F098101F7CD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAccountService", "UserAccountService\UserAccountService.csproj", "{196DFB82-600C-458A-BF32-91CE127C1B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAccountService", "UserAccountService\UserAccountService.csproj", "{196DFB82-600C-458A-BF32-91CE127C1B37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductServiceTests", "ProductServiceTests\ProductServiceTests.csproj", "{D7FB78AB-FF5A-4AC9-9AC6-2E3A37F8819C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{196DFB82-600C-458A-BF32-91CE127C1B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{196DFB82-600C-458A-BF32-91CE127C1B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{196DFB82-600C-458A-BF32-91CE127C1B37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7FB78AB-FF5A-4AC9-9AC6-2E3A37F8819C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7FB78AB-FF5A-4AC9-9AC6-2E3A37F8819C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7FB78AB-FF5A-4AC9-9AC6-2E3A37F8819C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7FB78AB-FF5A-4AC9-9AC6-2E3A37F8819C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

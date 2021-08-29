@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProductService.BusinessLayer;
 using ProductService.DataAccess;
 using ProductService.Models;
+using ProductService.ViewModels;
 
 namespace ProductService.Controllers
 {
@@ -12,25 +14,32 @@ namespace ProductService.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductDataSource productSource;
+        private readonly IProductManager productManager;
 
-        public ProductController(IProductDataSource prod)
+        public ProductController(IProductManager prodManager)
         {
-            productSource = prod;
+            productManager = prodManager;
         }
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> Get(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
+        public ActionResult<IEnumerable<ProductListViewModel>> Get(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
         {
-            return productSource.GetProducts(max, page, productType, productTypeCode, orderBy, orderByAscending);
+            //Is this an API specifically for our UI, or a more generic API to our underlying data?
+            return productManager.GetProductsForListPage(max, page, productType, productTypeCode, orderBy, orderByAscending);
         }
-        
+
+        [HttpGet("{id}")]
+        public ActionResult<ProductDetailViewModel> Get(int id)
+        {
+            //Is this an API specifically for our UI, or a more generic API to our underlying data?
+            return productManager.GetProductDetails(id);
+        }
 
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Product newProductValues)
         {
-            return productSource.UpdateProduct(newProductValues);
+            return productManager.UpdateProduct(newProductValues);
         }
 
 
@@ -38,23 +47,14 @@ namespace ProductService.Controllers
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id, bool purge)
         {
-            //TODO move any more complicated logic into a middle "productLogic / manager" type class
-            var product = productSource.GetProduct(id);
-            if(product == null)
-            {
-                //product doesnt exist
-                //Could Add a more complex custom action result, with properties for returned data, status messages, error messages, etc
-                return true;
-            }
-
-            return productSource.DeleteProduct(product, purge);
+            return productManager.DeleteProduct(id, purge);
         }
 
 
         [HttpPut]
         public ActionResult<int> Put([FromBody] Product newProduct)
         {
-            var res = productSource.CreateProduct(newProduct);
+            var res = productManager.CreateProduct(newProduct);
             return res;
         }
     }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
 using ProductService.DataAccess;
+using ProductService.BusinessLayer;
 
 namespace ProductService
 {
@@ -36,7 +37,11 @@ namespace ProductService
             );
 
 
+            //TODO auto add classes for dependancy injection by naming pattern.
             services.AddScoped<IProductDataSource, ProductDataSource>();
+            services.AddScoped<IProductTypeDataSource, ProductTypeDataSource>();
+            services.AddScoped<IProductManager, ProductManager>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

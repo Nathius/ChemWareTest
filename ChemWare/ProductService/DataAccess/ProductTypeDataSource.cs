@@ -12,30 +12,33 @@ using Dapper.Contrib.Extensions;
 
 namespace ProductService.DataAccess
 {
-    public interface IProductDataSource
+    public interface IProductTypeDataSource
     {
         //Generic get function for use on main procudt list page
-        List<Product> GetProducts(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true);
+        List<ProductType> GetProductTypes(int? max = null, int? page = null, string orderBy = null, bool orderByAscending = true);
 
-        //get specific product by id
-        Product GetProduct(int id);
+        //Get productTypes by id
+        List<ProductType> GetProductTypes(List<int> ids);
+
+        //get specific productType by id
+        ProductType GetProductType(int id);
 
         //Will update the matching record by id to match exactly what is passed in.
-        bool UpdateProduct(Product newProductValues);
+        bool UpdateProductType(ProductType newTypeValues);
 
 
         //deletes a product, either by setting a soft delete flag or by hard delete / purge or db data
-        bool DeleteProduct(Product productToDelete, bool purge = false);
+        bool DeleteProductType(ProductType typeToDelete);
 
         //creates a new product
-        int CreateProduct(Product newProduct);
+        int CreateProductType(ProductType newType);
     }
 
-    public class ProductDataSource : IProductDataSource
+    public class ProductTypeDataSource : IProductTypeDataSource
     {
         private readonly IConfiguration _configuration;
 
-        public ProductDataSource(IConfiguration config)
+        public ProductTypeDataSource(IConfiguration config)
         {
             _configuration = config;
         }
@@ -45,17 +48,17 @@ namespace ProductService.DataAccess
             return _configuration.GetConnectionString("ChemWare");
         }
 
-        private List<Product> RunQuery(string query)
+        private List<ProductType> RunQuery(string query)
         {
             using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
-                var results = connection.Query<Product>(query).ToList();
+                var results = connection.Query<ProductType>(query).ToList();
                 return results;
             }
         }
 
         //Generic get function for use on main procudt list page
-        public List<Product> GetProducts(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
+        public List<ProductType> GetProductTypes(int? max = null, int? page = null, string orderBy = null, bool orderByAscending = true)
         {
             string query = "SELECT ";
 
@@ -68,21 +71,7 @@ namespace ProductService.DataAccess
             }
 
             //select products
-            query += "* FROM Product ";
-
-            //Add basic where clause and build upon if required
-            query += "WHERE (IsDeleted IS NULL OR IsDeleted = 0) ";
-
-            //Limit results to product type if specified as either ID or type code
-            if(productType.HasValue)
-            {
-                query += string.Format("AND productTypeId = {0} ", productType.Value);
-            }
-            else if(string.IsNullOrEmpty(productTypeCode) == false)
-            {
-                //TODO possible sql injection, sanatise strings coming from UI
-                query += string.Format("AND productTypeId = (select productTypeId from ProductType where code = '{0}') ", productTypeCode);
-            }
+            query += "* FROM ProductType ";
 
             //order by field and direction if specified
             if(string.IsNullOrEmpty(orderBy) == false)
@@ -110,8 +99,16 @@ namespace ProductService.DataAccess
             return RunQuery(query);
         }
 
-        //get specific product by id
-        public Product GetProduct(int id)
+        public List<ProductType> GetProductTypes(List<int> ids)
+        {
+            string idList = string.Join(",", ids);
+            string query = string.Format("SELECT * FROM ProductType WHERE ProductTypeId in ({0})", idList);
+
+            return RunQuery(query);
+        }
+
+        //get specific productType by id
+        public ProductType GetProductType(int id)
         {
             if(id < 0)
             {
@@ -120,58 +117,47 @@ namespace ProductService.DataAccess
 
             using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
-                var result = connection.Get<Product>(id);
+                var result = connection.Get<ProductType>(id);
                 return result;
             }
         }
 
 
         //Will update the matching record by id to match exactly what is passed in.
-        public bool UpdateProduct(Product newProductValues)
+        public bool UpdateProductType(ProductType newTypeValues)
         {
             using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
-                var results = connection.Update<Product>(newProductValues);
+                var results = connection.Update<ProductType>(newTypeValues);
                 return results;
             }
         }
 
         //delete a product, either soft delete or hard purge 
-        public bool DeleteProduct(Product productToDelete, bool purge = false)
+        public bool DeleteProductType(ProductType typeToDelete)
         {
-            if(productToDelete == null)
+            if(typeToDelete == null)
             {
                 return true;//already deleted / never existed
             }
 
             using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
-                if(purge)
-                {
                     //Hard delete of row
-                    var results = connection.Delete<Product>(productToDelete);
-                    return results;
-                }
-                else
-                {
-                    //soft delete of row from app awareness
-                    productToDelete.IsDeleted = true;
-                    var results = connection.Update<Product>(productToDelete);
-                    return results;
-                }
-                
+                    var results = connection.Delete<ProductType>(typeToDelete);
+                    return results;   
             }
         }
 
-        //creates a new product record
-        public int CreateProduct(Product newProduct)
+        //creates a new productType record
+        public int CreateProductType(ProductType newType)
         {
             //invalidate id, table auto incraments id property
-            newProduct.ProductId = -1;
+            newType.ProductTypeId = -1;
 
             using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
-                    var results = connection.Insert<Product>(newProduct);
+                    var results = connection.Insert<ProductType>(newType);
                     return (int)results;
             }
         }
