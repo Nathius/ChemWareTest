@@ -6,12 +6,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Dapper;
+using Dapper.Contrib;
+using System.Data;
+using Dapper.Contrib.Extensions;
 
 namespace ProductService.DataAccess
 {
     public interface IProductDataSource
     {
+        //Generic get function for use on main procudt list page
         List<Product> GetProducts(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true);
+
+        //Will update the matching record by id to match exactly what is passed in.
+        bool UpdateProduct(Product newProductValues);
     }
 
     public class ProductDataSource : IProductDataSource
@@ -23,11 +30,14 @@ namespace ProductService.DataAccess
             _configuration = config;
         }
 
+        private string GetConnectionString()
+        {
+            return _configuration.GetConnectionString("ChemWare");
+        }
+
         private List<Product> RunQuery(string query)
         {
-            var connectionString = _configuration.GetConnectionString("ChemWare"); ;
-
-            using (var connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = new SqlConnection(GetConnectionString()))
             {
                 var results = connection.Query<Product>(query).ToList();
                 return results;
@@ -76,7 +86,7 @@ namespace ProductService.DataAccess
             }
             else
             {
-                query += "ORDER BY Name desc ";
+                query += "ORDER BY Name asc ";
             }
 
             //paginate results if specified
@@ -86,6 +96,16 @@ namespace ProductService.DataAccess
             }
 
             return RunQuery(query);
+        }
+
+        //Will update the matching record by id to match exactly what is passed in.
+        public bool UpdateProduct(Product newProductValues)
+        {
+            using (IDbConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                var results = connection.Update<Product>(newProductValues);
+                return results;
+            }
         }
 
     }

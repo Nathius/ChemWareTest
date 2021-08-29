@@ -12,11 +12,11 @@ namespace ProductService.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductDataSource product;
+        private readonly IProductDataSource productSource;
 
         public ProductController(IProductDataSource prod)
         {
-            product = prod;
+            productSource = prod;
         }
 
         // GET api/values
@@ -24,8 +24,17 @@ namespace ProductService.Controllers
         public ActionResult<IEnumerable<Product>> Get(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
         {
 
-            return product.GetProducts(max, page, productType, productTypeCode, orderBy, orderByAscending);
+            return productSource.GetProducts(max, page, productType, productTypeCode, orderBy, orderByAscending);
         }
+
+        //bool UpdateProduct(int productId, Product newProductValues)
+        // POST api/values
+        [HttpPost]
+        public ActionResult<bool> Post([FromBody] Product newProductValues)
+        {
+            return productSource.UpdateProduct(newProductValues);
+        }
+
 
         //// GET api/values/5
         //[HttpGet("{id}")]
