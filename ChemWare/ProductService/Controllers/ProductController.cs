@@ -35,6 +35,23 @@ namespace ProductService.Controllers
             return productSource.UpdateProduct(newProductValues);
         }
 
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public ActionResult<bool> Delete(int id, bool purge)
+        {
+            //TODO move any more complicated logic into a middle "productLogic / manager" type class
+            var product = productSource.GetProduct(id);
+            if(product == null)
+            {
+                //TODO  Add more complex custon action result, with properties for returned data, status messages, error messages, etc
+                //product doesnt exist
+                return true;
+            }
+
+            return productSource.DeleteProduct(product, purge);
+
+        }
+
 
         //// GET api/values/5
         //[HttpGet("{id}")]

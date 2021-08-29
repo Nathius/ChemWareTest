@@ -16,6 +16,7 @@ namespace ProductService.Models
         public float Price { get; set; }
         public bool Active { get; set; }
         public int ProductTypeId { get; set; }
+        public bool IsDeleted { get; set; }
         
 
     }
