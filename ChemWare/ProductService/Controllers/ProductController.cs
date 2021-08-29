@@ -21,10 +21,10 @@ namespace ProductService.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> Get()
+        public ActionResult<IEnumerable<Product>> Get(int? max = null, int? page = null, int? productType = null, string productTypeCode = null, string orderBy = null, bool orderByAscending = true)
         {
 
-            return product.GetProducts();
+            return product.GetProducts(max, page, productType, productTypeCode, orderBy, orderByAscending);
         }
 
         //// GET api/values/5
